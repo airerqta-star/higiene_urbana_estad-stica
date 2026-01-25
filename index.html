@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Higiene Urbana | AGC Reconquista</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="https://res.cloudinary.com/dthg9wo6r/image/upload/v1763866260/logoagc_jkb5my.jpg">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dthg9wo6r/image/upload/v1763866260/logoagc_jkb5my.jpg">
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Dashboard Higiene Urbana | AGC Reconquista">
+    <meta name="description" content="Panel de control de Higiene Urbana - Agencia Gubernamental de Control, Municipalidad de Reconquista, Santa Fe. Seguimiento de inmuebles, inspecciones y estado de trámites.">
+    <meta name="author" content="Agencia Gubernamental de Control - Municipalidad de Reconquista">
+    <meta name="keywords" content="higiene urbana, reconquista, santa fe, agc, municipalidad, inspecciones, control">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://agc-reconquista.github.io/dashboard-higiene-urbana/">
+    <meta property="og:title" content="Dashboard Higiene Urbana | AGC Reconquista">
+    <meta property="og:description" content="Panel de control de Higiene Urbana - Agencia Gubernamental de Control, Municipalidad de Reconquista. 191 inmuebles relevados, inspecciones y seguimiento de trámites en tiempo real.">
+    <meta property="og:image" content="https://res.cloudinary.com/dthg9wo6r/image/upload/v1769351600/dashboardmaleza_wvchsi.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:site_name" content="AGC Reconquista">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://agc-reconquista.github.io/dashboard-higiene-urbana/">
+    <meta name="twitter:title" content="Dashboard Higiene Urbana | AGC Reconquista">
+    <meta name="twitter:description" content="Panel de control de Higiene Urbana - Agencia Gubernamental de Control, Municipalidad de Reconquista. 191 inmuebles relevados.">
+    <meta name="twitter:image" content="https://res.cloudinary.com/dthg9wo6r/image/upload/v1769351600/dashboardmaleza_wvchsi.jpg">
+    
+    <!-- WhatsApp -->
+    <meta property="og:image:alt" content="Dashboard Higiene Urbana - AGC Reconquista">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00d48a">
+    <meta name="msapplication-TileColor" content="#0a0a0f">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-card-hover: #22222e;
+            --text-primary: #ffffff;
+            --text-secondary: #8b8b9e;
+            --text-muted: #5c5c6e;
+            --accent-green: #00d48a;
+            --accent-green-glow: rgba(0, 212, 138, 0.15);
+            --accent-red: #ff4757;
+            --accent-red-glow: rgba(255, 71, 87, 0.15);
+            --accent-yellow: #ffc048;
+            --accent-yellow-glow: rgba(255, 192, 72, 0.15);
+            --accent-blue: #4a9eff;
+            --accent-blue-glow: rgba(74, 158, 255, 0.15);
+            --accent-purple: #a855f7;
+            --accent-purple-glow: rgba(168, 85, 247, 0.15);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-glow: rgba(255, 255, 255, 0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        .header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, transparent 100%);
+            padding: 24px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            max-width: 1800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-green) 0%, #00a86b 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(0, 212, 138, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .header-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header-badge {
+            background: var(--bg-card);
+            padding: 8px 16px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .header-badge strong {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .header-badge.new {
+            border-color: var(--accent-purple);
+        }
+
+        .header-badge.new strong {
+            color: var(--accent-purple);
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 32px 40px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-color) 0%, transparent 100%);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--kpi-color, var(--accent-green));
+            opacity: 0.8;
+        }
+
+        .kpi-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: var(--text-primary);
+        }
+
+        .kpi-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .kpi-change {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .kpi-change.up {
+            background: var(--accent-green-glow);
+            color: var(--accent-green);
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover { border-color: var(--border-glow); }
+        .chart-card.span-3 { grid-column: span 3; }
+        .chart-card.span-4 { grid-column: span 4; }
+        .chart-card.span-5 { grid-column: span 5; }
+        .chart-card.span-6 { grid-column: span 6; }
+        .chart-card.span-7 { grid-column: span 7; }
+        .chart-card.span-8 { grid-column: span 8; }
+        .chart-card.span-12 { grid-column: span 12; }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        .chart-container.small { height: 220px; }
+        .chart-container.large { height: 350px; }
+
+        .heatmap-container { overflow-x: auto; }
+
+        .heatmap {
+            display: grid;
+            gap: 3px;
+            min-width: 100%;
+        }
+
+        .heatmap-cell {
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.2s;
+            min-width: 60px;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.05);
+            z-index: 1;
+        }
+
+        .heatmap-header {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .heatmap-label {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            text-align: left;
+            padding-left: 12px;
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+
+        .heat-0 { background: var(--bg-secondary); color: var(--text-muted); }
+        .heat-1 { background: rgba(0, 212, 138, 0.2); color: var(--accent-green); }
+        .heat-2 { background: rgba(0, 212, 138, 0.4); color: var(--accent-green); }
+        .heat-3 { background: rgba(0, 212, 138, 0.6); color: #fff; }
+        .heat-4 { background: rgba(0, 212, 138, 0.8); color: #fff; }
+        .heat-5 { background: var(--accent-green); color: #fff; }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+        }
+
+        .status-item:hover { background: var(--bg-card-hover); }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.critico { background: var(--accent-red); box-shadow: 0 0 12px var(--accent-red-glow); }
+        .status-dot.malo { background: var(--accent-yellow); box-shadow: 0 0 12px var(--accent-yellow-glow); }
+        .status-dot.regular { background: var(--accent-blue); box-shadow: 0 0 12px var(--accent-blue-glow); }
+        .status-dot.bueno { background: var(--accent-green); box-shadow: 0 0 12px var(--accent-green-glow); }
+
+        .status-info { flex: 1; min-width: 0; }
+        .status-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+        .status-value { font-size: 12px; color: var(--text-secondary); }
+
+        /* Table Styles */
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .table-controls-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: var(--radius-md);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+        .tab:hover { color: var(--text-primary); }
+
+        .tab.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 8px 14px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--accent-green);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 0 12px;
+        }
+
+        .pagination-info strong {
+            color: var(--text-primary);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .filters-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select, .search-input {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 16px;
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .filter-select { min-width: 160px; cursor: pointer; }
+        .search-input { flex: 1; min-width: 200px; }
+        .search-input::placeholder { color: var(--text-muted); }
+
+        .filter-select:hover, .filter-select:focus,
+        .search-input:focus {
+            border-color: var(--accent-green);
+            outline: none;
+        }
+
+        .filter-select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .filter-summary {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 12px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+
+        .filter-summary-item {
+            color: var(--text-secondary);
+        }
+
+        .filter-summary-item strong {
+            color: var(--text-primary);
+            margin-left: 6px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background: var(--bg-secondary);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .data-table th:hover { background: var(--bg-card); }
+
+        .data-table th.sorted-asc::after { content: ' ↑'; color: var(--accent-green); }
+        .data-table th.sorted-desc::after { content: ' ↓'; color: var(--accent-green); }
+
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .data-table tbody tr { transition: background 0.2s; }
+        .data-table tbody tr:hover { background: var(--bg-card-hover); }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-critico { background: var(--accent-red-glow); color: var(--accent-red); }
+        .badge-malo { background: var(--accent-yellow-glow); color: var(--accent-yellow); }
+        .badge-regular { background: var(--accent-blue-glow); color: var(--accent-blue); }
+        .badge-bueno { background: var(--accent-green-glow); color: var(--accent-green); }
+        .badge-notificado { background: var(--accent-purple-glow); color: var(--accent-purple); }
+        .badge-constatacion { background: var(--accent-blue-glow); color: var(--accent-blue); }
+        .badge-cumplimentado { background: var(--accent-green-glow); color: var(--accent-green); }
+        .badge-proceso { background: var(--accent-yellow-glow); color: var(--accent-yellow); }
+
+        .footer {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-muted);
+            font-size: 12px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 1200px) {
+            .chart-card.span-3, .chart-card.span-4 { grid-column: span 6; }
+            .chart-card.span-5, .chart-card.span-7, .chart-card.span-8 { grid-column: span 12; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .header { padding: 16px 20px; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .chart-card.span-3, .chart-card.span-4, .chart-card.span-5,
+            .chart-card.span-6, .chart-card.span-7, .chart-card.span-8,
+            .chart-card.span-12 { grid-column: span 12; }
+            .filters-bar { flex-direction: column; }
+            .table-controls { flex-direction: column; align-items: stretch; }
+            .pagination { justify-content: center; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in { animation: fadeIn 0.5s ease forwards; }
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">🏛️</div>
+                <div class="logo-text">
+                    <h1>Dashboard Higiene Urbana</h1>
+                    <span>Agencia Gubernamental de Control • Reconquista</span>
+                </div>
+            </div>
+            <div class="header-badges">
+                <div class="header-badge">
+                    Base de datos: <strong>191 inmuebles</strong>
+                </div>
+                <div class="header-badge new">
+                    Nuevos: <strong>+16 registros</strong>
+                </div>
+                <div class="header-badge">
+                    Actualizado: <strong>26 Enero 2026</strong>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- KPIs -->
+        <section class="animate-in delay-1">
+            <div class="section-title">Indicadores Principales</div>
+            <div class="kpi-grid">
+                <div class="kpi-card" style="--kpi-color: var(--accent-blue);">
+                    <div class="kpi-label">Inmuebles Relevados</div>
+                    <div class="kpi-value">191</div>
+                    <div class="kpi-subtitle">En 28 barrios de Reconquista</div>
+                    <div class="kpi-change up">+16 esta semana</div>
+                </div>
+                <div class="kpi-card" style="--kpi-color: var(--accent-purple);">
+                    <div class="kpi-label">Inspecciones</div>
+                    <div class="kpi-value">203</div>
+                    <div class="kpi-subtitle">Visitas realizadas</div>
+                </div>
+                <div class="kpi-card" style="--kpi-color: var(--accent-yellow);">
+                    <div class="kpi-label">Notificaciones</div>
+                    <div class="kpi-value">48</div>
+                    <div class="kpi-subtitle">Enviadas a propietarios</div>
+                </div>
+                <div class="kpi-card" style="--kpi-color: var(--accent-green);">
+                    <div class="kpi-label">Propietarios</div>
+                    <div class="kpi-value">77</div>
+                    <div class="kpi-subtitle">Identificados en sistema</div>
+                </div>
+                <div class="kpi-card" style="--kpi-color: var(--accent-red);">
+                    <div class="kpi-label">Fotografías</div>
+                    <div class="kpi-value">366</div>
+                    <div class="kpi-subtitle">Evidencia documentada</div>
+                </div>
+                <div class="kpi-card" style="--kpi-color: #ff6b9d;">
+                    <div class="kpi-label">Actas Labradas</div>
+                    <div class="kpi-value">2</div>
+                    <div class="kpi-subtitle">Infracciones formalizadas</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Row 1: Estado -->
+        <section class="animate-in delay-2">
+            <div class="section-title">Estado de Higiene y Trámites</div>
+            <div class="charts-grid">
+                <div class="chart-card span-4">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Estado de Higiene</div>
+                            <div class="chart-subtitle">Distribución por condición encontrada</div>
+                        </div>
+                    </div>
+                    <div class="chart-container small">
+                        <canvas id="estadoHigieneChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card span-4">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Estado de Trámite</div>
+                            <div class="chart-subtitle">Progreso administrativo</div>
+                        </div>
+                    </div>
+                    <div class="chart-container small">
+                        <canvas id="estadoTramiteChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card span-4">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Resumen de Estados</div>
+                            <div class="chart-subtitle">Detalle numérico</div>
+                        </div>
+                    </div>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-dot critico"></div>
+                            <div class="status-info">
+                                <div class="status-label">Crítico</div>
+                                <div class="status-value">31 (16.2%)</div>
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-dot malo"></div>
+                            <div class="status-info">
+                                <div class="status-label">Malo</div>
+                                <div class="status-value">110 (57.6%)</div>
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-dot regular"></div>
+                            <div class="status-info">
+                                <div class="status-label">Regular</div>
+                                <div class="status-value">14 (7.3%)</div>
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-dot bueno"></div>
+                            <div class="status-info">
+                                <div class="status-label">Bueno</div>
+                                <div class="status-value">36 (18.8%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Row 2: Barrios y Timeline -->
+        <section class="animate-in delay-3">
+            <div class="section-title">Análisis Territorial y Temporal</div>
+            <div class="charts-grid">
+                <div class="chart-card span-7">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Casos por Barrio</div>
+                            <div class="chart-subtitle">Top 15 barrios con mayor cantidad de relevamientos</div>
+                        </div>
+                    </div>
+                    <div class="chart-container large">
+                        <canvas id="barriosChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card span-5">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Actividad Diaria</div>
+                            <div class="chart-subtitle">Relevamientos por fecha (Enero 2026)</div>
+                        </div>
+                    </div>
+                    <div class="chart-container large">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Heatmap -->
+        <section>
+            <div class="section-title">Matriz de Calor: Barrio × Estado de Higiene</div>
+            <div class="chart-card span-12">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Concentración de Casos por Zona y Estado</div>
+                        <div class="chart-subtitle">Intensidad del color indica cantidad de inmuebles</div>
+                    </div>
+                </div>
+                <div class="heatmap-container" id="heatmapContainer"></div>
+            </div>
+        </section>
+
+        <!-- Additional Charts -->
+        <section>
+            <div class="section-title">Métricas Complementarias</div>
+            <div class="charts-grid">
+                <div class="chart-card span-4">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Tipo de Inspección</div>
+                            <div class="chart-subtitle">Primera vs Reinspección vs Seguimiento</div>
+                        </div>
+                    </div>
+                    <div class="chart-container small">
+                        <canvas id="tipoInspeccionChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card span-4">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Fotografías por Tipo</div>
+                            <div class="chart-subtitle">Antes vs Después de intervención</div>
+                        </div>
+                    </div>
+                    <div class="chart-container small">
+                        <canvas id="fotosChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card span-4">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Evolución Semanal</div>
+                            <div class="chart-subtitle">Relevamientos por semana</div>
+                        </div>
+                    </div>
+                    <div class="chart-container small">
+                        <canvas id="semanalChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Table Section -->
+        <section>
+            <div class="section-title">Detalle de Inmuebles</div>
+            <div class="chart-card span-12">
+                <div class="table-controls">
+                    <div class="table-controls-left">
+                        <div class="tabs">
+                            <button class="tab active" data-tab="tabla">Tabla de Datos</button>
+                            <button class="tab" data-tab="estadisticas">Estadísticas Cruzadas</button>
+                        </div>
+                        <div class="pagination" id="paginationTop">
+                            <button class="pagination-btn" id="prevBtn" disabled>← Anterior</button>
+                            <span class="pagination-info">
+                                Página <strong id="currentPage">1</strong> de <strong id="totalPages">4</strong>
+                            </span>
+                            <button class="pagination-btn" id="nextBtn">Siguiente →</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content active" id="tabla">
+                    <div class="filters-bar">
+                        <select class="filter-select" id="filterBarrio">
+                            <option value="">Todos los barrios</option>
+                        </select>
+                        <select class="filter-select" id="filterEstadoHigiene">
+                            <option value="">Todos los estados</option>
+                            <option value="Crítico">Crítico</option>
+                            <option value="Malo">Malo</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Bueno">Bueno</option>
+                        </select>
+                        <select class="filter-select" id="filterEstadoTramite">
+                            <option value="">Todos los trámites</option>
+                            <option value="Constatación">Constatación</option>
+                            <option value="Notificado">Notificado</option>
+                            <option value="Cumplimentado">Cumplimentado</option>
+                            <option value="En Proceso">En Proceso</option>
+                        </select>
+                        <select class="filter-select" id="filterFecha">
+                            <option value="">Todas las fechas</option>
+                        </select>
+                        <input type="text" class="search-input" id="searchInput" placeholder="🔍  Buscar por dirección o nro. incidente...">
+                    </div>
+                    <div class="filter-summary" id="filterSummary">
+                        <div class="filter-summary-item">Mostrando:<strong id="showingCount">50</strong></div>
+                        <div class="filter-summary-item">Total filtrado:<strong id="filteredCount">191</strong></div>
+                        <div class="filter-summary-item">Estado crítico:<strong id="criticoCount">0</strong></div>
+                        <div class="filter-summary-item">Notificados:<strong id="notificadoCount">0</strong></div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th data-sort="id">ID</th>
+                                    <th data-sort="fecha">Fecha</th>
+                                    <th data-sort="barrio">Barrio</th>
+                                    <th data-sort="direccion">Dirección</th>
+                                    <th data-sort="higiene">Estado Higiene</th>
+                                    <th data-sort="tramite">Estado Trámite</th>
+                                    <th data-sort="inspecciones">Insp.</th>
+                                    <th data-sort="notificaciones">Notif.</th>
+                                    <th data-sort="fotos">Fotos</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="estadisticas">
+                    <div class="charts-grid" style="margin-top: 0;">
+                        <div class="chart-card span-6" style="background: var(--bg-secondary);">
+                            <div class="chart-header">
+                                <div>
+                                    <div class="chart-title">Estado Higiene × Barrio (Top 10)</div>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="stackedBarrioChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card span-6" style="background: var(--bg-secondary);">
+                            <div class="chart-header">
+                                <div>
+                                    <div class="chart-title">Estado Trámite × Barrio (Top 10)</div>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="tramiteBarrioChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Dashboard Higiene Urbana • Agencia Gubernamental de Control • Municipalidad de Reconquista, Santa Fe</p>
+        <p style="margin-top: 8px;">Generado automáticamente desde base de datos SQLite • 191 registros procesados</p>
+    </footer>
+
+    <script>
+        // ===== DATA =====
+        const data = {
+            porEstadoHigiene: [["Malo", 110], ["Bueno", 36], ["Crítico", 31], ["Regular", 14]],
+            porEstadoTramite: [["Constatación", 148], ["Notificado", 37], ["Cumplimentado", 5], ["En Proceso", 1]],
+            porBarrio: [["CHAPERO",27],["AMÉRICA",21],["SAN MARTIN",17],["UNIDOS",16],["NORTE",16],["VELODROMO",13],["ALMAFUERTE",9],["HOSPITAL",8],["BELGRANO",8],["ITATI",6],["ZULEMA",5],["ZORZON",5],["PARQUE INDUSTRIAL",5],["DON JUAN",5],["OBLIGADO",4]],
+            timelineRelevamiento: [["07",30],["10",9],["12",31],["13",30],["14",25],["15",20],["17",4],["19",3],["20",13],["21",23],["24",1],["25",2]],
+            porTipoInspeccion: [["Primera", 199], ["Seguimiento", 3], ["Reinspección", 1]],
+            fotosPorTipo: [["Antes", 361], ["Después", 5]],
+            porSemana: [["Semana 1", 39], ["Semana 2", 110], ["Semana 3", 42]],
+            barrioXEstado: [["ALMAFUERTE","Bueno",1],["ALMAFUERTE","Crítico",2],["ALMAFUERTE","Malo",6],["AMÉRICA","Bueno",1],["AMÉRICA","Crítico",4],["AMÉRICA","Malo",14],["AMÉRICA","Regular",2],["BELGRANO","Bueno",2],["BELGRANO","Crítico",2],["BELGRANO","Malo",3],["BELGRANO","Regular",1],["CHAPERO","Crítico",4],["CHAPERO","Malo",21],["CHAPERO","Regular",2],["HOSPITAL","Bueno",5],["HOSPITAL","Malo",1],["HOSPITAL","Regular",2],["ITATI","Bueno",4],["ITATI","Crítico",1],["ITATI","Malo",1],["NORTE","Bueno",1],["NORTE","Crítico",4],["NORTE","Malo",11],["SAN MARTIN","Bueno",12],["SAN MARTIN","Malo",5],["UNIDOS","Crítico",4],["UNIDOS","Malo",11],["UNIDOS","Regular",1],["VELODROMO","Crítico",3],["VELODROMO","Malo",8],["VELODROMO","Regular",2],["ZORZON","Crítico",3],["ZORZON","Malo",2],["ZULEMA","Bueno",1],["ZULEMA","Malo",4]],
+            barrioXTramite: [["ALMAFUERTE","Constatación",3],["ALMAFUERTE","Notificado",6],["AMÉRICA","Constatación",21],["BELGRANO","Constatación",7],["BELGRANO","Cumplimentado",1],["CHAPERO","Constatación",13],["CHAPERO","En Proceso",1],["CHAPERO","Notificado",13],["HOSPITAL","Constatación",8],["ITATI","Constatación",6],["NORTE","Constatación",3],["NORTE","Cumplimentado",1],["NORTE","Notificado",12],["SAN MARTIN","Constatación",11],["SAN MARTIN","Cumplimentado",2],["SAN MARTIN","Notificado",4],["UNIDOS","Constatación",16],["VELODROMO","Constatación",13],["ZORZON","Constatación",5],["ZULEMA","Constatación",5]],
+            listaBarrios: ["ALMAFUERTE","AMÉRICA","BELGRANO","CENTER","CENTRO","CHAPERO","DON JUAN","ESTE","HOSPITAL","ITATI","LANCEROS","LAS FLORES","LAS LILAS","LUJAN","MORENO","NAZARETH","NORTE","OBLIGADO","OESTE","PARQUE INDUSTRIAL","SAN JERONIMO","SAN MARTIN","SANTA ROSA","SARMIENTO","UNIDOS","VELODROMO","ZORZON","ZULEMA"],
+            listaFechas: ["2026-01-25","2026-01-24","2026-01-21","2026-01-20","2026-01-19","2026-01-17","2026-01-15","2026-01-14","2026-01-13","2026-01-12","2026-01-10","2026-01-07"],
+            detalleInmuebles: [[195,"2026-01-25","UNIDOS","PASAJE 26/28 2875","Malo","Constatación","11413363",1,0,2],[192,"2026-01-25","UNIDOS","AMENABAR 2460","Malo","Constatación","11412843",1,0,2],[173,"2026-01-24","BELGRANO","55 2360","Bueno","Cumplimentado","11419640",1,0,2],[202,"2026-01-21","UNIDOS","ANGELELLI 1134","Malo","Constatación","11415183",1,0,1],[201,"2026-01-21","UNIDOS","PASAJE 24/26 3150","Malo","Constatación","11414956",1,0,1],[200,"2026-01-21","UNIDOS","MENDOZA 1250","Malo","Constatación","11414652",1,0,2],[199,"2026-01-21","UNIDOS","MENDOZA 1455","Regular","Constatación","11414456",1,0,2],[198,"2026-01-21","UNIDOS","CHUBUT 1399","Crítico","Constatación","11414191",1,0,2],[197,"2026-01-21","UNIDOS","SAN LUIS 1135","Malo","Constatación","11413906",1,0,3],[196,"2026-01-21","UNIDOS","28 2790","Malo","Constatación","11313676",1,0,1],[194,"2026-01-21","UNIDOS","CANADA 1338","Crítico","Constatación","11413224",1,0,2],[193,"2026-01-21","UNIDOS","AMENABAR 2479","Malo","Constatación","11412885",1,0,2],[191,"2026-01-21","UNIDOS","LUCAS FUNES 2630","Malo","Constatación","11412735",1,0,1],[190,"2026-01-21","UNIDOS","LUCAS FUNES 2630","Malo","Constatación","11412651",1,0,1],[189,"2026-01-21","UNIDOS","L DE LA TORRE 1114","Crítico","Constatación","11412341",1,0,2],[188,"2026-01-21","UNIDOS","OLESSIO 3170","Crítico","Constatación","11412219",1,0,2],[187,"2026-01-21","UNIDOS","OLESSIO 3105","Malo","Constatación","11412054",1,0,2],[178,"2026-01-21","SAN MARTIN","AMENABAR 1640","Bueno","Constatación","11418917",1,0,2],[177,"2026-01-21","SARMIENTO","LEDESMA 661","Malo","Constatación","11419106",1,0,2],[176,"2026-01-21","SAN JERONIMO","BROWN 2292","Bueno","Cumplimentado","11419488",1,0,1],[175,"2026-01-21","CENTER","CORRIENTES 2377","Malo","Constatación","11419568",1,0,2],[174,"2026-01-21","BELGRANO","55 2366","Malo","Constatación","11419622",1,0,2],[172,"2026-01-21","BELGRANO","55 2440","Malo","Constatación","11419662",1,0,2],[171,"2026-01-21","BELGRANO","55 2544","Crítico","Constatación","11419687",1,0,2],[170,"2026-01-21","BELGRANO","CHUBUT 2450","Crítico","Constatación","11419718",1,0,1],[169,"2026-01-21","BELGRANO","CHUBUT 2422","Malo","Constatación","11419729",1,0,1],[155,"2026-01-20","ZULEMA","BELGRANO 885","Malo","Constatación","11408700",1,0,2],[154,"2026-01-20","ZULEMA","BELGRANO 4624","Malo","Constatación","11408656",1,0,3],[153,"2026-01-20","ZULEMA","BELGRANO 4315","Malo","Constatación","11408611",1,0,3],[152,"2026-01-20","ZULEMA","111 764","Malo","Constatación","11408588",1,0,3],[151,"2026-01-20","ZULEMA","BELGRANO 4538","Bueno","Constatación","11408565",1,0,2],[150,"2026-01-20","ITATI","PANAMA 1074","Bueno","Constatación","11402365",1,0,1],[149,"2026-01-20","ITATI","21 2822","Crítico","Constatación","11402549",1,0,2],[148,"2026-01-20","ITATI","GRAL LOPEZ 3005","Bueno","Constatación","11402732",1,0,1],[147,"2026-01-20","ITATI","MEXICO 136","Bueno","Constatación","11402964",1,0,1],[146,"2026-01-20","ITATI","PANAMA 1074","Malo","Constatación","11402004",1,0,2],[145,"2026-01-20","ITATI","PANAMA 1130","Bueno","Constatación","11402234",1,0,2],[96,"2026-01-20","CENTER","53 1955","Malo","Constatación","",0,0,1],[94,"2026-01-20","DON JUAN","45 2176","Malo","Constatación","11364524",1,0,2],[186,"2026-01-19","HOSPITAL","PUEYRREDÓN 1881","Bueno","Constatación","11390603",1,0,2],[185,"2026-01-19","HOSPITAL","ENTRE RIOS 1427","Bueno","Constatación","11390809",1,0,2],[41,"2026-01-19","ALMAFUERTE","BELGRANO 105","Crítico","Notificado","11325268",1,1,2],[168,"2026-01-17","VELODROMO","59 ","Malo","Constatación","11386508",1,0,2],[167,"2026-01-17","VELODROMO","12 BIS 2815","Malo","Constatación","11386506",1,0,2],[166,"2026-01-17","VELODROMO","59 452","Regular","Constatación","11386505",1,0,3],[165,"2026-01-17","VELODROMO","10 BIS ","Malo","Constatación","11386303",1,0,0],[184,"2026-01-15","HOSPITAL","FREYRE 1974","Malo","Constatación","11370429",1,0,2],[183,"2026-01-15","HOSPITAL","MISIONES 1870","Bueno","Constatación","11369932",1,0,1],[182,"2026-01-15","HOSPITAL","BROWN 1969","Regular","Constatación","11368151",1,0,3],[181,"2026-01-15","HOSPITAL","ESPAÑA 2066","Bueno","Constatación","11367891",1,0,2],[180,"2026-01-15","HOSPITAL","BROWN 1964","Regular","Constatación","11368035",1,0,3],[179,"2026-01-15","HOSPITAL","MISIONES 1338","Bueno","Constatación","11370226",1,0,2],[127,"2026-01-15","AMÉRICA","CHACABUCO 2920","Malo","Constatación","11369204",1,0,3],[126,"2026-01-15","AMÉRICA","ITUZAINGO 3000","Regular","Constatación","11369206",1,0,1],[125,"2026-01-15","ZORZON","FREYRE 2430","Crítico","Constatación","11368769",1,0,2],[124,"2026-01-15","ZORZON","BROWN 2270","Crítico","Constatación","11368771",1,0,2],[123,"2026-01-15","ZORZON","PUEYRREDÓN 2233","Crítico","Constatación","11368772",1,0,2],[122,"2026-01-15","ZORZON","46 1450","Malo","Constatación","11368774",1,0,2],[121,"2026-01-15","ZORZON","48 1350","Malo","Constatación","11368777",1,0,2],[93,"2026-01-15","BELGRANO","58 2343","Bueno","Constatación","11365588",1,0,2],[92,"2026-01-15","BELGRANO","58 2565","Regular","Constatación","11365615",1,0,2],[91,"2026-01-15","NAZARETH","137 1022","Malo","Constatación","11374532",1,0,2],[90,"2026-01-15","NAZARETH","101 1934","Malo","Constatación","11374376",1,0,2],[89,"2026-01-15","NAZARETH","97 1938","Malo","Constatación","11374339",1,0,1],[88,"2026-01-15","LAS FLORES","NICARAGUA 1963","Malo","Constatación","11374236",1,0,2],[87,"2026-01-15","NAZARETH","103 1625","Malo","Constatación","11374406",1,0,2],[141,"2026-01-14","AMÉRICA","73 220","Malo","Constatación","11361083",1,0,1],[136,"2026-01-14","AMÉRICA","NICARAGUA 355","Crítico","Constatación","11360230",1,0,2],[135,"2026-01-14","AMÉRICA","73 160","Malo","Constatación","11360784",1,0,2],[134,"2026-01-14","AMÉRICA","PASAJE 6/8 ","Malo","Constatación","11358468",1,0,2],[133,"2026-01-14","AMÉRICA","PASAJE 6/8 3120","Malo","Constatación","11358813",1,0,2],[132,"2026-01-14","AMÉRICA","PASAJE 8/10 2940","Malo","Constatación","11361952",1,0,2],[131,"2026-01-14","AMÉRICA","PASAJE 8/10 2850","Malo","Constatación","11362088",1,0,2],[130,"2026-01-14","AMÉRICA","SAN MARTIN 3151","Malo","Constatación","11359952",1,0,2],[129,"2026-01-14","AMÉRICA","LUDUEÑA 2960","Malo","Constatación","11361835",1,0,2],[128,"2026-01-14","AMÉRICA","ROCA 3010","Crítico","Constatación","11359460",1,0,3],[97,"2026-01-14","LAS LILAS","58 2822","Bueno","Constatación","11364461",1,0,1],[95,"2026-01-14","DON JUAN","PASAJE 58/60 ","Bueno","Constatación","11364491",1,0,0],[85,"2026-01-14","CHAPERO","25 DE MAYO 1955","Malo","Constatación","",1,0,1],[84,"2026-01-14","CHAPERO","OLESSIO 2081","Malo","Notificado","11406130",1,1,2],[83,"2026-01-14","CHAPERO","GRAL OBLIGADO 1859","Regular","Notificado","11361120",1,1,2],[82,"2026-01-14","CHAPERO","BELGRANO 1865","Regular","Constatación","11360966",0,0,2],[81,"2026-01-14","CHAPERO","2 DE ABRIL 650","Malo","Notificado","11359901",1,1,2],[80,"2026-01-14","CHAPERO","2 DE ABRIL 655","Malo","Notificado","11359636",1,1,3],[79,"2026-01-14","CHAPERO","2 DE ABRIL 823","Malo","Notificado","11359280",1,1,1],[63,"2026-01-14","PARQUE INDUSTRIAL","FORMOSA 926","Regular","Constatación","11358343",1,0,2],[62,"2026-01-14","PARQUE INDUSTRIAL","MITRE 1696","Malo","Notificado","11358726",1,1,2],[61,"2026-01-14","PARQUE INDUSTRIAL","IRIONDO 1933","Malo","Constatación","11359049",1,0,2],[60,"2026-01-14","PARQUE INDUSTRIAL","IRIONDO 1945","Malo","Constatación","11359177",1,0,2],[59,"2026-01-14","PARQUE INDUSTRIAL","IRIONDO 1850","Crítico","Constatación","11359519",1,0,3],[48,"2026-01-14","SAN MARTIN","SAN LORENZO 1555","Bueno","Cumplimentado","11361492",2,0,5],[142,"2026-01-13","AMÉRICA","ROSSI 3070","Malo","Constatación","11349636",1,0,2],[140,"2026-01-13","AMÉRICA","57 130","Malo","Constatación","11348464",1,0,2],[139,"2026-01-13","AMÉRICA","57 261","Malo","Constatación","11348237",1,0,2],[138,"2026-01-13","AMÉRICA","SAN MARTIN 2600","Malo","Constatación","11346952",1,0,1],[137,"2026-01-13","AMÉRICA","CHACABUCO 1730","Malo","Constatación","11348823",1,0,2],[104,"2026-01-13","CHAPERO","9 DE JULIO 2060","Malo","Constatación","11353177",1,0,2],[103,"2026-01-13","AMÉRICA","PASAJE 6/8 3009","Bueno","Constatación","11353667",1,0,1],[102,"2026-01-13","AMÉRICA","PASAJE 6/8 3010","Regular","Constatación","11353557",1,0,3],[101,"2026-01-13","LAS LILAS","54 2228","Bueno","Constatación","11353690",1,0,2],[100,"2026-01-13","LAS LILAS","56 2225","Bueno","Constatación","11353755",1,0,1],[99,"2026-01-13","DON JUAN","45 2724","Regular","Constatación","11353767",1,0,2],[98,"2026-01-13","DON JUAN","56 2176","Bueno","Constatación","11353798",1,0,1],[78,"2026-01-13","CHAPERO","SANTA FE 1043","Malo","Notificado","11359066",1,1,4],[77,"2026-01-13","CHAPERO","SANTA FE 855","Malo","Notificado","11358817",1,1,2],[76,"2026-01-13","CHAPERO","PASAJE 18/20 2165","Malo","Notificado","11358320",1,2,3],[75,"2026-01-13","CHAPERO","ROCA 2215","Malo","Constatación","11358037",1,0,2],[74,"2026-01-13","CHAPERO","CHACABUCO 2285","Malo","Notificado","11357996",1,1,1],[73,"2026-01-13","CHAPERO","CHACABUCO 2240","Malo","Notificado","11351232",1,1,1],[72,"2026-01-13","CHAPERO","CHACABUCO 150","Crítico","Constatación","11351233",1,0,2],[71,"2026-01-13","CHAPERO","ITUZAINGO 2187","Crítico","Constatación","11351238",1,0,1],[70,"2026-01-13","CHAPERO","GEORGIAS DEL SUR 240","Malo","Constatación","11351243",1,0,2],[69,"2026-01-13","CHAPERO","GEORGIAS DEL SUR 250","Malo","Constatación","11351247",1,0,2],[68,"2026-01-13","CHAPERO","PASAJE 4/6 2150","Malo","Constatación","11351254",1,0,2],[67,"2026-01-13","CHAPERO","PASAJE 4/6 2150","Crítico","Notificado","11351257",1,1,2],[66,"2026-01-13","CHAPERO","GEORGIAS DEL SUR 140","Crítico","Notificado","11357997",1,1,2],[65,"2026-01-13","CHAPERO","FUERZA AÉREA 407","Malo","Notificado","11358000",1,1,2],[64,"2026-01-13","CHAPERO","AUSTRIA 434","Malo","Constatación","",1,0,0],[58,"2026-01-13","MORENO","MISIONES 540","Malo","Constatación","",1,0,0],[57,"2026-01-13","MORENO","ITALIA 2099","Bueno","Constatación","11347974",1,0,2],[18,"2026-01-13","CHAPERO","ISLAS MALVINAS (47) 400","Malo","En Proceso","",1,0,3],[144,"2026-01-12","AMÉRICA","LUDUEÑA 2365","Crítico","Constatación","11336087",1,0,3],[143,"2026-01-12","AMÉRICA","PASAJE 4/6 2423","Crítico","Constatación","11335124",1,0,3],[112,"2026-01-12","CHAPERO","AUSTRIA 368","Malo","Constatación","11341849",1,0,3],[111,"2026-01-12","CHAPERO","CHACABUBO 2151","Malo","Constatación","11341886",1,0,2],[110,"2026-01-12","CHAPERO","SANTA FE 969","Malo","Constatación","11342155",1,0,2],[109,"2026-01-12","OBLIGADO","ENRIQUE ANGELELLI 652","Malo","Constatación","11342156",1,0,2],[108,"2026-01-12","OBLIGADO","PASAJE 14-16 3171","Malo","Constatación","11342191",1,0,2],[107,"2026-01-12","OBLIGADO","PASAJE 20/22 2871","Malo","Constatación","11342269",1,0,2],[106,"2026-01-12","OBLIGADO","GRAL OBLIGADO 3138","Bueno","Constatación","11342397",1,0,2],[105,"2026-01-12","OESTE","LUCAS FUNES 830","Crítico","Constatación","11342646",1,0,3],[86,"2026-01-12","ALMAFUERTE","9 DE JULIO 475","Malo","Notificado","11339737",1,1,2],[56,"2026-01-12","MORENO","FORMOSA 591","Crítico","Constatación","11346826",1,0,2],[55,"2026-01-12","SAN MARTIN","SAN LORENZO 1555","Malo","Constatación","",1,0,0],[54,"2026-01-12","MORENO","ITALIA 2099","Malo","Constatación","",1,0,0],[53,"2026-01-12","NORTE","LUCAS FUNES 50","Malo","Notificado","",1,1,0],[52,"2026-01-12","NORTE","SAN LORENZO 115","Crítico","Constatación","11339701",1,0,2],[51,"2026-01-12","CENTRO","SAN LORENZO 879","Malo","Notificado","11339705",1,1,2],[50,"2026-01-12","ALMAFUERTE","LUCAS FUNES 220","Malo","Notificado","11339712",1,1,1],[49,"2026-01-12","NORTE","INDEPENDENCIA 1040-1043","Malo","Notificado","11339715",1,1,1],[47,"2026-01-12","NORTE","AMENABAR 155","Bueno","Cumplimentado","11339736",2,0,5],[32,"2026-01-12","SAN MARTIN","SAN LORENZO 1671","Bueno","Constatación","11334913",1,0,2],[31,"2026-01-12","SAN MARTIN","BROWN 1499","Malo","Notificado","11337688",1,1,3],[30,"2026-01-12","SAN MARTIN","NEWBERY 1469","Bueno","Constatación","11337457",1,0,2],[29,"2026-01-12","SAN MARTIN","PUEYRREDÓN 1286","Bueno","Constatación","11337108",1,0,1],[28,"2026-01-12","SAN MARTIN","PUEYRREDÓN 1290","Bueno","Constatación","11337032",1,0,1],[27,"2026-01-12","SAN MARTIN","ESPAÑA 1655","Bueno","Constatación","11336449",1,0,1],[26,"2026-01-12","SAN MARTIN","AMENABAR 1303","Bueno","Constatación","11336184",1,0,1],[25,"2026-01-12","SAN MARTIN","LUCAS FUNES 1444","Bueno","Constatación","11335726",1,0,1],[24,"2026-01-12","SAN MARTIN","LUCAS FUNES 1105","Bueno","Constatación","11335990",1,0,1],[23,"2026-01-12","SAN MARTIN","SAN LORENZO 1631","Bueno","Constatación","11335042",1,0,2],[22,"2026-01-12","SAN MARTIN","OLESSIO 1179","Bueno","Cumplimentado","11334475",2,0,3],[164,"2026-01-10","VELODROMO","4 BIS 2789","Malo","Constatación","11329529",1,0,2],[163,"2026-01-10","VELODROMO","4 BIS 2780","Crítico","Constatación","11329553",1,0,3],[162,"2026-01-10","VELODROMO","6 BIS 2789","Regular","Constatación","11329596",1,0,2],[161,"2026-01-10","VELODROMO","6 BIS 2779","Malo","Constatación","11329662",1,0,2],[160,"2026-01-10","VELODROMO","ROSELLI 249","Malo","Constatación","11329687",1,0,3],[159,"2026-01-10","VELODROMO","ROSELLI 254","Malo","Constatación","11329846",1,0,2],[158,"2026-01-10","VELODROMO","6 BIS 2621","Crítico","Constatación","11329727",1,0,2],[157,"2026-01-10","VELODROMO","8 BIS 2720","Crítico","Constatación","11329816",1,0,2],[156,"2026-01-10","VELODROMO","6 BIS 2654","Malo","Constatación","11329758",1,0,2],[119,"2026-01-07","SAN JERONIMO","MISIONES 1150","Bueno","Constatación","11309166",1,0,3],[118,"2026-01-07","SANTA ROSA","15 3033","Regular","Constatación","11309332",1,0,1],[117,"2026-01-07","LUJAN","68 1740","Malo","Constatación","11309439",1,0,3],[116,"2026-01-07","LANCEROS","BV PERON 2433","Crítico","Constatación","11309503",1,0,2],[115,"2026-01-07","LANCEROS","FUERZA AEREA 2484","Malo","Constatación","11309560",1,0,2],[114,"2026-01-07","DON JUAN","52 2131","Regular","Constatación","11309605",1,0,1],[113,"2026-01-07","LUJAN","SANTA FE 3067","Malo","Constatación","11309697",1,0,3],[46,"2026-01-07","NORTE","OLESSIO 275","Malo","Notificado","11325278",1,1,2],[45,"2026-01-07","NORTE","OLESSIO 127","Crítico","Notificado","11325276",1,1,2],[44,"2026-01-07","ALMAFUERTE","9 DE JULIO 236","Malo","Notificado","11325273",1,1,2],[43,"2026-01-07","ALMAFUERTE","9 DE JULIO 168","Bueno","Constatación","11325272",2,0,4],[42,"2026-01-07","ALMAFUERTE","BELGRANO 20","Crítico","Notificado","11325271",1,1,2],[40,"2026-01-07","ALMAFUERTE","BELGRANO 157","Malo","Notificado","11325265",1,1,2],[39,"2026-01-07","NORTE","SARMIENTO 1345","Malo","Notificado","11325260",1,1,3],[38,"2026-01-07","NORTE","ALMAFUERTE 1090","Malo","Notificado","11325259",1,1,1],[37,"2026-01-07","NORTE","ALMAFUERTE 1545","Malo","Notificado","11325257",1,1,3],[36,"2026-01-07","NORTE","COLON 1301","Malo","Notificado","11325255",1,1,2],[35,"2026-01-07","NORTE","COLON 1027","Malo","Notificado","11325252",1,1,2],[34,"2026-01-07","NORTE","INDEPENDENCIA 1160","Malo","Constatación","11325250",1,0,2],[33,"2026-01-07","NORTE","INDEPENDENCIA 1130-1160","Crítico","Notificado","11325248",1,1,1],[21,"2026-01-07","SAN MARTIN","9 DE JULIO 1260","Malo","Notificado","11303745",1,1,3],[20,"2026-01-07","SAN MARTIN","25 DE MAYO 1378","Malo","Notificado","11306215",1,1,3],[19,"2026-01-07","SAN MARTIN","BELGRANO 1436","Malo","Notificado","11302816",1,1,3],[17,"2026-01-07","ALMAFUERTE","GRAL OBLIGADO 115","Malo","Constatación","11303007 0",1,0,0],[16,"2026-01-07","ALMAFUERTE","GRAL OBLIGADO 270","Malo","Constatación","11303007",1,0,2],[15,"2026-01-07","ESTE","PATRICIO DIEZ 14","Malo","Constatación","11305307 0",1,0,2],[14,"2026-01-07","ESTE","CONSTITUYENTE 930","Malo","Constatación","11305307",1,0,0],[13,"2026-01-07","NORTE","SARMIENTO 1338","Malo","Notificado","11325263",1,1,2],[12,"2026-01-07","NORTE","Almafuerte 1001","Crítico","Constatación","11325559",1,0,3],[11,"2026-01-07","NORTE","Colón 1301","Malo","Notificado","11325255",1,1,1]]
+        };
+
+        // ===== CHART CONFIG =====
+        Chart.defaults.color = '#8b8b9e';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        const colors = {
+            green: '#00d48a', red: '#ff4757', yellow: '#ffc048',
+            blue: '#4a9eff', purple: '#a855f7', pink: '#ff6b9d',
+            cyan: '#00d4ff', orange: '#ff8c42'
+        };
+
+        const estadoColors = { 'Crítico': colors.red, 'Malo': colors.yellow, 'Regular': colors.blue, 'Bueno': colors.green };
+        const tramiteColors = { 'Constatación': colors.blue, 'Notificado': colors.purple, 'Cumplimentado': colors.green, 'En Proceso': colors.yellow };
+
+        // ===== CHARTS =====
+        new Chart(document.getElementById('estadoHigieneChart'), {
+            type: 'doughnut',
+            data: {
+                labels: data.porEstadoHigiene.map(d => d[0]),
+                datasets: [{ data: data.porEstadoHigiene.map(d => d[1]), backgroundColor: data.porEstadoHigiene.map(d => estadoColors[d[0]]), borderWidth: 0, hoverOffset: 8 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'circle' } } } }
+        });
+
+        new Chart(document.getElementById('estadoTramiteChart'), {
+            type: 'doughnut',
+            data: {
+                labels: data.porEstadoTramite.map(d => d[0]),
+                datasets: [{ data: data.porEstadoTramite.map(d => d[1]), backgroundColor: data.porEstadoTramite.map(d => tramiteColors[d[0]]), borderWidth: 0, hoverOffset: 8 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'circle' } } } }
+        });
+
+        new Chart(document.getElementById('barriosChart'), {
+            type: 'bar',
+            data: {
+                labels: data.porBarrio.map(d => d[0]),
+                datasets: [{ label: 'Inmuebles', data: data.porBarrio.map(d => d[1]), backgroundColor: data.porBarrio.map((_, i) => Object.values(colors)[i % 8] + '80'), borderColor: data.porBarrio.map((_, i) => Object.values(colors)[i % 8]), borderWidth: 1, borderRadius: 6 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { display: false } } } }
+        });
+
+        new Chart(document.getElementById('timelineChart'), {
+            type: 'line',
+            data: {
+                labels: data.timelineRelevamiento.map(d => d[0] + '/01'),
+                datasets: [{ label: 'Relevamientos', data: data.timelineRelevamiento.map(d => d[1]), borderColor: colors.green, backgroundColor: colors.green + '20', fill: true, tension: 0.4, pointRadius: 6, pointBackgroundColor: colors.green, pointBorderColor: '#fff', pointBorderWidth: 2 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(255,255,255,0.03)' }, beginAtZero: true } } }
+        });
+
+        new Chart(document.getElementById('tipoInspeccionChart'), {
+            type: 'pie',
+            data: { labels: data.porTipoInspeccion.map(d => d[0]), datasets: [{ data: data.porTipoInspeccion.map(d => d[1]), backgroundColor: [colors.green, colors.blue, colors.purple], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } } } }
+        });
+
+        new Chart(document.getElementById('fotosChart'), {
+            type: 'pie',
+            data: { labels: data.fotosPorTipo.map(d => d[0]), datasets: [{ data: data.fotosPorTipo.map(d => d[1]), backgroundColor: [colors.yellow, colors.green], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } } } }
+        });
+
+        new Chart(document.getElementById('semanalChart'), {
+            type: 'bar',
+            data: { labels: data.porSemana.map(d => d[0]), datasets: [{ label: 'Relevamientos', data: data.porSemana.map(d => d[1]), backgroundColor: [colors.blue + '80', colors.green + '80', colors.purple + '80'], borderColor: [colors.blue, colors.green, colors.purple], borderWidth: 1, borderRadius: 8 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(255,255,255,0.03)' }, beginAtZero: true } } }
+        });
+
+        // Stacked charts
+        const topBarrios = ['CHAPERO', 'AMÉRICA', 'SAN MARTIN', 'UNIDOS', 'NORTE', 'VELODROMO', 'ALMAFUERTE', 'HOSPITAL', 'BELGRANO', 'ITATI'];
+        const estados = ['Bueno', 'Regular', 'Malo', 'Crítico'];
+        const tramites = ['Constatación', 'Notificado', 'Cumplimentado', 'En Proceso'];
+
+        new Chart(document.getElementById('stackedBarrioChart'), {
+            type: 'bar',
+            data: {
+                labels: topBarrios,
+                datasets: estados.map(estado => ({ label: estado, data: topBarrios.map(barrio => { const f = data.barrioXEstado.find(d => d[0] === barrio && d[1] === estado); return f ? f[2] : 0; }), backgroundColor: estadoColors[estado] + '80', borderColor: estadoColors[estado], borderWidth: 1 }))
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: 'rgba(255,255,255,0.03)' } } }, plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 12 } } } }
+        });
+
+        new Chart(document.getElementById('tramiteBarrioChart'), {
+            type: 'bar',
+            data: {
+                labels: topBarrios,
+                datasets: tramites.map(tramite => ({ label: tramite, data: topBarrios.map(barrio => { const f = data.barrioXTramite.find(d => d[0] === barrio && d[1] === tramite); return f ? f[2] : 0; }), backgroundColor: tramiteColors[tramite] + '80', borderColor: tramiteColors[tramite], borderWidth: 1 }))
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: 'rgba(255,255,255,0.03)' } } }, plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 12 } } } }
+        });
+
+        // ===== HEATMAP =====
+        function buildHeatmap() {
+            const container = document.getElementById('heatmapContainer');
+            const barrios = [...new Set(data.barrioXEstado.map(d => d[0]))];
+            const estados = ['Bueno', 'Regular', 'Malo', 'Crítico'];
+            let html = `<div class="heatmap" style="grid-template-columns: 120px repeat(${estados.length}, 1fr);">`;
+            html += `<div class="heatmap-cell heatmap-header">Barrio</div>`;
+            estados.forEach(e => html += `<div class="heatmap-cell heatmap-header">${e}</div>`);
+            barrios.forEach(barrio => {
+                html += `<div class="heatmap-cell heatmap-label" title="${barrio}">${barrio}</div>`;
+                estados.forEach(estado => {
+                    const found = data.barrioXEstado.find(d => d[0] === barrio && d[1] === estado);
+                    const val = found ? found[2] : 0;
+                    const heat = val === 0 ? 0 : Math.min(5, Math.ceil(val / 4));
+                    html += `<div class="heatmap-cell heat-${heat}">${val || '-'}</div>`;
+                });
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        buildHeatmap();
+
+        // ===== DATA TABLE WITH PAGINATION =====
+        const ITEMS_PER_PAGE = 50;
+        let currentPage = 1;
+        let filteredData = [...data.detalleInmuebles];
+        let sortColumn = null;
+        let sortDirection = 'asc';
+
+        const filterBarrio = document.getElementById('filterBarrio');
+        const filterEstadoHigiene = document.getElementById('filterEstadoHigiene');
+        const filterEstadoTramite = document.getElementById('filterEstadoTramite');
+        const filterFecha = document.getElementById('filterFecha');
+        const searchInput = document.getElementById('searchInput');
+        const tableBody = document.getElementById('tableBody');
+
+        // Populate filters
+        data.listaBarrios.forEach(b => filterBarrio.innerHTML += `<option value="${b}">${b}</option>`);
+        data.listaFechas.forEach(f => filterFecha.innerHTML += `<option value="${f}">${f}</option>`);
+
+        function getBadgeClass(estado, tipo) {
+            if (tipo === 'higiene') return 'badge-' + estado.toLowerCase().replace('í', 'i');
+            const map = { 'Constatación': 'constatacion', 'Notificado': 'notificado', 'Cumplimentado': 'cumplimentado', 'En Proceso': 'proceso' };
+            return 'badge-' + (map[estado] || 'constatacion');
+        }
+
+        function filterAndSort() {
+            const barrio = filterBarrio.value;
+            const estadoH = filterEstadoHigiene.value;
+            const estadoT = filterEstadoTramite.value;
+            const fecha = filterFecha.value;
+            const search = searchInput.value.toLowerCase();
+
+            filteredData = data.detalleInmuebles.filter(row => {
+                if (barrio && row[2] !== barrio) return false;
+                if (estadoH && row[4] !== estadoH) return false;
+                if (estadoT && row[5] !== estadoT) return false;
+                if (fecha && row[1] !== fecha) return false;
+                if (search && !row[3].toLowerCase().includes(search) && !row[6].includes(search)) return false;
+                return true;
+            });
+
+            if (sortColumn !== null) {
+                const colIndex = { id: 0, fecha: 1, barrio: 2, direccion: 3, higiene: 4, tramite: 5, inspecciones: 7, notificaciones: 8, fotos: 9 }[sortColumn];
+                filteredData.sort((a, b) => {
+                    let valA = a[colIndex], valB = b[colIndex];
+                    if (typeof valA === 'string') valA = valA.toLowerCase();
+                    if (typeof valB === 'string') valB = valB.toLowerCase();
+                    if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+                    if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                });
+            }
+
+            currentPage = 1;
+            renderTable();
+            updateSummary();
+        }
+
+        function updateSummary() {
+            document.getElementById('filteredCount').textContent = filteredData.length;
+            document.getElementById('criticoCount').textContent = filteredData.filter(r => r[4] === 'Crítico').length;
+            document.getElementById('notificadoCount').textContent = filteredData.filter(r => r[5] === 'Notificado').length;
+        }
+
+        function renderTable() {
+            const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const pageData = filteredData.slice(start, end);
+
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages || 1;
+            document.getElementById('showingCount').textContent = pageData.length;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+
+            tableBody.innerHTML = pageData.map(row => `
+                <tr>
+                    <td>${row[0]}</td>
+                    <td>${row[1]}</td>
+                    <td>${row[2]}</td>
+                    <td>${row[3]}</td>
+                    <td><span class="badge ${getBadgeClass(row[4], 'higiene')}">${row[4]}</span></td>
+                    <td><span class="badge ${getBadgeClass(row[5], 'tramite')}">${row[5]}</span></td>
+                    <td>${row[7]}</td>
+                    <td>${row[8]}</td>
+                    <td>${row[9]}</td>
+                </tr>
+            `).join('');
+
+            // Update sort indicators
+            document.querySelectorAll('.data-table th').forEach(th => {
+                th.classList.remove('sorted-asc', 'sorted-desc');
+                if (th.dataset.sort === sortColumn) {
+                    th.classList.add(sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                }
+            });
+        }
+
+        // Event listeners
+        filterBarrio.addEventListener('change', filterAndSort);
+        filterEstadoHigiene.addEventListener('change', filterAndSort);
+        filterEstadoTramite.addEventListener('change', filterAndSort);
+        filterFecha.addEventListener('change', filterAndSort);
+        searchInput.addEventListener('input', filterAndSort);
+
+        document.getElementById('prevBtn').addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+        document.getElementById('nextBtn').addEventListener('click', () => { const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE); if (currentPage < totalPages) { currentPage++; renderTable(); } });
+
+        document.querySelectorAll('.data-table th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => {
+                const col = th.dataset.sort;
+                if (sortColumn === col) {
+                    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortColumn = col;
+                    sortDirection = 'asc';
+                }
+                filterAndSort();
+            });
+        });
+
+        // Tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Initial render
+        filterAndSort();
+    </script>
+</body>
+</html>
